@@ -6,7 +6,7 @@ import (
 
 // MyGormModel mimixks GormModel but uses uuid's for ID, generated in go
 type MyGormModel struct {
-	ID        string     `gorm:"column:ID,primary_key"`
+	ID        string     `gorm:"column:ID;primary_key"`
 	CreatedAt time.Time  `gorm:"column:CreatedAt"`
 	UpdatedAt time.Time  `gorm:"column:UpdatedAt"`
 	DeletedAt *time.Time `gorm:"column:DeletedAt"`

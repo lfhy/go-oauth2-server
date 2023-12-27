@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 
+	"go-oauth2-server/log"
 	"go-oauth2-server/util/migrations"
 
 	"gorm.io/gorm"
@@ -29,25 +30,25 @@ func migrate0001(db *gorm.DB, name string) error {
 
 	// Create tables
 	if err := db.AutoMigrate(new(OauthClient)); err != nil {
-		return fmt.Errorf("error creating oauth_clients table: %s", err)
+		log.WARNING.Printf("error creating oauth_clients table: %s", err)
 	}
 	if err := db.AutoMigrate(new(OauthScope)); err != nil {
-		return fmt.Errorf("error creating oauth_scopes table: %s", err)
+		log.WARNING.Printf("error creating oauth_scopes table: %s", err)
 	}
 	if err := db.AutoMigrate(new(OauthRole)); err != nil {
-		return fmt.Errorf("error creating oauth_roles table: %s", err)
+		log.WARNING.Printf("error creating oauth_roles table: %s", err)
 	}
 	if err := db.AutoMigrate(new(OauthUser)); err != nil {
-		return fmt.Errorf("error creating oauth_users table: %s", err)
+		log.WARNING.Printf("error creating oauth_users table: %s", err)
 	}
 	if err := db.AutoMigrate(new(OauthRefreshToken)); err != nil {
-		return fmt.Errorf("error creating oauth_refresh_tokens table: %s", err)
+		log.WARNING.Printf("error creating oauth_refresh_tokens table: %s", err)
 	}
 	if err := db.AutoMigrate(new(OauthAccessToken)); err != nil {
 		return fmt.Errorf("error creating oauth_access_tokens table: %s", err)
 	}
 	if err := db.AutoMigrate(new(OauthAuthorizationCode)); err != nil {
-		return fmt.Errorf("error creating oauth_authorization_codes table: %s", err)
+		log.WARNING.Printf("error creating oauth_authorization_codes table: %s", err)
 	}
 	// err := db.Model(new(OauthUser)).AddForeignKey(
 	// 	"role_id", "oauth_roles(id)",

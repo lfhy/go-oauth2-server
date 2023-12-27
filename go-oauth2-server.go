@@ -13,6 +13,7 @@ import (
 var (
 	cliApp        *cli.App
 	configBackend string
+	port          int
 )
 
 func init() {
@@ -41,27 +42,33 @@ func main() {
 	cliApp.Commands = []cli.Command{
 		{
 			Name:  "migrate",
-			Usage: "run migrations",
+			Usage: "数据库初始化或迁移",
 			Action: func(c *cli.Context) error {
 				return cmd.Migrate(config.ConfigBackendType(configBackend))
 			},
 		},
 		{
 			Name:  "loaddata",
-			Usage: "load data from fixture",
+			Usage: "从配置文件加载数据",
 			Action: func(c *cli.Context) error {
 				return cmd.LoadData(c.Args(), config.ConfigBackendType(configBackend))
 			},
 		},
 		{
-			Name:  "runserver",
-			Usage: "run web server",
+			Name:  "server",
+			Usage: "运行Web服务",
 			Action: func(c *cli.Context) error {
-				return cmd.RunServer(config.ConfigBackendType(configBackend))
+				return cmd.RunServer(config.ConfigBackendType(configBackend), port)
 			},
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:        "run.port",
+					Value:       8080,
+					Destination: &port,
+					Usage:       "服务运行端口",
+				}},
 		},
 	}
-
 	// Run the CLI app
 	if err := cliApp.Run(os.Args); err != nil {
 		log.Fatal(err)

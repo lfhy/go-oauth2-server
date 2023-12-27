@@ -11,7 +11,7 @@ type fileBackend struct {
 func (b *fileBackend) InitConfigBackend() {
 }
 
-// LoadConfig gets the JSON from ETCD and unmarshals it to the config object
+// 从文件加载配置信息
 func (b *fileBackend) LoadConfig() (*Config, error) {
 	data, err := os.ReadFile(ConfigPath)
 	if err != nil {

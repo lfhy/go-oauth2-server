@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,7 +15,7 @@ import (
 )
 
 // RunServer runs the app
-func RunServer(configBackend config.ConfigBackendType) error {
+func RunServer(configBackend config.ConfigBackendType, port int) error {
 	cnf, db, err := initConfigDB(true, true, configBackend)
 	if err != nil {
 		return err
@@ -50,8 +51,7 @@ func RunServer(configBackend config.ConfigBackendType) error {
 	// Set the router
 	app.UseHandler(router)
 
-	// Run the server on port 8080, gracefully stop on SIGTERM signal
-	graceful.Run(":8080", 5*time.Second, app)
+	graceful.Run(fmt.Sprintf(":%v", port), 5*time.Second, app)
 
 	return nil
 }

@@ -45,7 +45,7 @@ func (s *Service) UserExists(username string) bool {
 func (s *Service) FindUserByUsername(username string) (*models.OauthUser, error) {
 	// Usernames are case insensitive
 	user := new(models.OauthUser)
-	notFound := s.db.Where("username = LOWER(?)", username).
+	notFound := s.db.Where("username = ?", strings.ToLower(username)).
 		First(user) == nil
 
 	// Not found

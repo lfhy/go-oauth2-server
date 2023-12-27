@@ -15,11 +15,11 @@ import (
 
 var (
 	// ErrClientNotFound ...
-	ErrClientNotFound = errors.New("Client not found")
+	ErrClientNotFound = errors.New("client not found")
 	// ErrInvalidClientSecret ...
-	ErrInvalidClientSecret = errors.New("Invalid client secret")
+	ErrInvalidClientSecret = errors.New("invalid client secret")
 	// ErrClientIDTaken ...
-	ErrClientIDTaken = errors.New("Client ID taken")
+	ErrClientIDTaken = errors.New("client ID taken")
 )
 
 // ClientExists returns true if client exists
@@ -32,7 +32,7 @@ func (s *Service) ClientExists(clientID string) bool {
 func (s *Service) FindClientByClientID(clientID string) (*models.OauthClient, error) {
 	// Client IDs are case insensitive
 	client := new(models.OauthClient)
-	notFound := s.db.Where("key = LOWER(?)", clientID).
+	notFound := s.db.Where("key = ?", strings.ToLower(clientID)).
 		First(client) == nil
 
 	// Not found
