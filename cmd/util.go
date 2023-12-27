@@ -1,13 +1,14 @@
 package cmd
 
 import (
-	"github.com/RichardKnop/go-oauth2-server/config"
-	"github.com/RichardKnop/go-oauth2-server/database"
-	"github.com/jinzhu/gorm"
+	"go-oauth2-server/config"
+	"go-oauth2-server/database"
+
+	"gorm.io/gorm"
 )
 
 // initConfigDB loads the configuration and connects to the database
-func initConfigDB(mustLoadOnce, keepReloading bool, configBackend string) (*config.Config, *gorm.DB, error) {
+func initConfigDB(mustLoadOnce, keepReloading bool, configBackend config.ConfigBackendType) (*config.Config, *gorm.DB, error) {
 	// Config
 	cnf := config.NewConfig(mustLoadOnce, keepReloading, configBackend)
 

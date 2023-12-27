@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
+	"go-oauth2-server/models"
 )
 
 var (
@@ -49,9 +49,9 @@ func (s *Service) ScopeExists(requestedScope string) bool {
 	scopes := strings.Split(requestedScope, " ")
 
 	// Count how many of requested scopes exist in the database
-	var count int
+	var count int64
 	s.db.Model(new(models.OauthScope)).Where("scope in (?)", scopes).Count(&count)
 
 	// Return true only if all requested scopes found
-	return count == len(scopes)
+	return count == int64(len(scopes))
 }

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
+	"go-oauth2-server/models"
 )
 
 var (
@@ -32,7 +32,7 @@ func (s *Service) getValidAuthorizationCode(code, redirectURI string, client *mo
 	// Fetch the auth code from the database
 	authorizationCode := new(models.OauthAuthorizationCode)
 	notFound := models.OauthAuthorizationCodePreload(s.db).Where("client_id = ?", client.ID).
-		Where("code = ?", code).First(authorizationCode).RecordNotFound()
+		Where("code = ?", code).First(authorizationCode) == nil
 
 	// Not found
 	if notFound {

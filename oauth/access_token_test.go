@@ -3,7 +3,8 @@ package oauth_test
 import (
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
+	"go-oauth2-server/models"
+
 	"github.com/RichardKnop/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -145,7 +146,7 @@ func (suite *OauthTestSuite) TestGrantAccessTokenDeletesExpiredTokens() {
 
 	// Check the test_token_1 was deleted
 	notFound = suite.db.Unscoped().Where("token = ?", "test_token_1").
-		First(new(models.OauthAccessToken)).RecordNotFound()
+		First(new(models.OauthAccessToken)) == nil
 	assert.True(suite.T(), notFound)
 
 	// Check the other three tokens are still around
@@ -156,7 +157,7 @@ func (suite *OauthTestSuite) TestGrantAccessTokenDeletesExpiredTokens() {
 	}
 	for _, token := range existingTokens {
 		notFound = suite.db.Unscoped().Where("token = ?", token).
-			First(new(models.OauthAccessToken)).RecordNotFound()
+			First(new(models.OauthAccessToken)) == nil
 		assert.False(suite.T(), notFound)
 	}
 
@@ -171,7 +172,7 @@ func (suite *OauthTestSuite) TestGrantAccessTokenDeletesExpiredTokens() {
 
 	// Check the test_token_2 was deleted
 	notFound = suite.db.Unscoped().Where("token = ?", "test_token_2").
-		First(new(models.OauthAccessToken)).RecordNotFound()
+		First(new(models.OauthAccessToken)) == nil
 	assert.True(suite.T(), notFound)
 
 	// Check that last two tokens are still around
@@ -181,7 +182,7 @@ func (suite *OauthTestSuite) TestGrantAccessTokenDeletesExpiredTokens() {
 	}
 	for _, token := range existingTokens {
 		notFound := suite.db.Unscoped().Where("token = ?", token).
-			First(new(models.OauthAccessToken)).RecordNotFound()
+			First(new(models.OauthAccessToken)) == nil
 		assert.False(suite.T(), notFound)
 	}
 }

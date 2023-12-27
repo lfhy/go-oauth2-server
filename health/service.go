@@ -1,7 +1,7 @@
 package health
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // Service struct keeps db object to avoid passing it around

@@ -1,7 +1,7 @@
 package oauth
 
 import (
-	"github.com/RichardKnop/go-oauth2-server/models"
+	"go-oauth2-server/models"
 )
 
 // AccessTokenResponse ...

@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/services"
+	"go-oauth2-server/config"
+	"go-oauth2-server/services"
+
 	"github.com/gorilla/mux"
 	"github.com/phyber/negroni-gzip/gzip"
 	"github.com/urfave/negroni"
@@ -12,12 +14,17 @@ import (
 )
 
 // RunServer runs the app
-func RunServer(configBackend string) error {
+func RunServer(configBackend config.ConfigBackendType) error {
 	cnf, db, err := initConfigDB(true, true, configBackend)
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func() {
+		d, err := db.DB()
+		if err == nil {
+			d.Close()
+		}
+	}()
 
 	// start the services
 	if err := services.Init(cnf, db); err != nil {

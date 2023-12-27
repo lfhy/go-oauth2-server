@@ -6,10 +6,11 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/oauth"
-	"github.com/RichardKnop/go-oauth2-server/oauth/tokentypes"
-	"github.com/RichardKnop/go-oauth2-server/test-util"
+	"go-oauth2-server/models"
+	"go-oauth2-server/oauth"
+	"go-oauth2-server/oauth/tokentypes"
+
+	testutil "github.com/RichardKnop/go-oauth2-server/test-util"
 	"github.com/RichardKnop/uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -167,7 +168,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrantDefaultsToOriginalScope() {
 	// Fetch data
 	accessToken := new(models.OauthAccessToken)
 	assert.False(suite.T(), models.OauthAccessTokenPreload(suite.db).
-		Last(accessToken).RecordNotFound())
+		Last(accessToken) == nil)
 
 	// Check the response body
 	expected := &oauth.AccessTokenResponse{
@@ -213,7 +214,7 @@ func (suite *OauthTestSuite) TestRefreshTokenGrant() {
 	// Fetch data
 	accessToken := new(models.OauthAccessToken)
 	assert.False(suite.T(), models.OauthAccessTokenPreload(suite.db).
-		Last(accessToken).RecordNotFound())
+		Last(accessToken) == nil)
 
 	// Check the response
 	expected := &oauth.AccessTokenResponse{

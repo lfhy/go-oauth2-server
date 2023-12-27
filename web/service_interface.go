@@ -3,10 +3,11 @@ package web
 import (
 	"net/http"
 
-	"github.com/RichardKnop/go-oauth2-server/config"
-	"github.com/RichardKnop/go-oauth2-server/oauth"
-	"github.com/RichardKnop/go-oauth2-server/session"
-	"github.com/RichardKnop/go-oauth2-server/util/routes"
+	"go-oauth2-server/config"
+	"go-oauth2-server/oauth"
+	"go-oauth2-server/session"
+	"go-oauth2-server/util/routes"
+
 	"github.com/gorilla/mux"
 )
 

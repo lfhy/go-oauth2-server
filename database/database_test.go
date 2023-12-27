@@ -4,8 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/RichardKnop/go-oauth2-server/config"
-	"github.com/RichardKnop/go-oauth2-server/database"
+	"go-oauth2-server/config"
+	"go-oauth2-server/database"
+
 	"github.com/stretchr/testify/assert"
 )
 

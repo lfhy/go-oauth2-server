@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"go-oauth2-server/util/migrations"
+
 	"github.com/RichardKnop/go-fixtures"
-	"github.com/RichardKnop/go-oauth2-server/util/migrations"
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
 	// Drivers
 	_ "github.com/lib/pq"
@@ -28,7 +31,11 @@ func CreateTestDatabase(dbPath string, migrationFunctions []func(*gorm.DB) error
 	migrations.MigrateAll(inMemoryDB, migrationFunctions)
 
 	// Load data from data
-	if err = fixtures.LoadFiles(fixtureFiles, inMemoryDB.DB(), "sqlite"); err != nil {
+	db, err := inMemoryDB.DB()
+	if err != nil {
+		return nil, err
+	}
+	if err = fixtures.LoadFiles(fixtureFiles, db, "sqlite"); err != nil {
 		return nil, err
 	}
 
@@ -50,7 +57,11 @@ func CreateTestDatabasePostgres(dbHost, dbUser, dbName string, migrationFunction
 	migrations.MigrateAll(db, migrationFunctions)
 
 	// Load data from data
-	if err = fixtures.LoadFiles(fixtureFiles, db.DB(), "postgres"); err != nil {
+	d, err := db.DB()
+	if err != nil {
+		return nil, err
+	}
+	if err = fixtures.LoadFiles(fixtureFiles, d, "postgres"); err != nil {
 		return nil, err
 	}
 
@@ -64,7 +75,7 @@ func rebuildDatabase(dbPath string) (*gorm.DB, error) {
 	os.Remove(dbPath)
 
 	// Init a new in-memory test database connection
-	inMemoryDB, err := gorm.Open("sqlite3", dbPath)
+	inMemoryDB, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"))
 	if err != nil {
 		return nil, err
 	}
@@ -92,14 +103,13 @@ func rebuildDatabasePostgres(dbHost, dbUser, dbName string) (*gorm.DB, error) {
 
 func openPostgresDB(dbHost, dbUser, dbName string) (*gorm.DB, error) {
 	// Init a new postgres test database connection
-	db, err := gorm.Open("postgres",
-		fmt.Sprintf(
-			"sslmode=disable host=%s port=5432 user=%s password='' dbname=%s",
-			dbHost,
-			dbUser,
-			dbName,
-		),
+	dburl := fmt.Sprintf(
+		"sslmode=disable host=%s port=5432 user=%s password='' dbname=%s",
+		dbHost,
+		dbUser,
+		dbName,
 	)
+	db, err := gorm.Open(postgres.Open(dburl))
 	if err != nil {
 		return nil, err
 	}

@@ -1,17 +1,23 @@
 package cmd
 
 import (
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/util/migrations"
+	"go-oauth2-server/config"
+	"go-oauth2-server/models"
+	"go-oauth2-server/util/migrations"
 )
 
 // Migrate runs database migrations
-func Migrate(configBackend string) error {
+func Migrate(configBackend config.ConfigBackendType) error {
 	_, db, err := initConfigDB(true, false, configBackend)
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func() {
+		d, err := db.DB()
+		if err == nil {
+			d.Close()
+		}
+	}()
 
 	// Bootstrap migrations
 	if err := migrations.Bootstrap(db); err != nil {

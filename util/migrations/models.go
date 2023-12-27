@@ -1,11 +1,11 @@
 package migrations
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // Migration represents a single database migration
 type Migration struct {
 	gorm.Model
-	Name string `sql:"size:255"`
+	Name string `gorm:"size:255"`
 }

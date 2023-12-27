@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/util"
+	"go-oauth2-server/models"
+	"go-oauth2-server/util"
 )
 
 var (
@@ -28,7 +28,7 @@ func (s *Service) GetOrCreateRefreshToken(client *models.OauthClient, user *mode
 	} else {
 		query = query.Where("user_id IS NULL")
 	}
-	found := !query.First(refreshToken).RecordNotFound()
+	found := query.First(refreshToken) != nil
 
 	// Check if the token is expired, if found
 	var expired bool
@@ -59,7 +59,7 @@ func (s *Service) GetValidRefreshToken(token string, client *models.OauthClient)
 	// Fetch the refresh token from the database
 	refreshToken := new(models.OauthRefreshToken)
 	notFound := models.OauthRefreshTokenPreload(s.db).Where("client_id = ?", client.ID).
-		Where("token = ?", token).First(refreshToken).RecordNotFound()
+		Where("token = ?", token).First(refreshToken) == nil
 
 	// Not found
 	if notFound {

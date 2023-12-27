@@ -2,6 +2,9 @@
 # TODO: When Go 1.9 is released vendor folder should be ignored automatically
 PACKAGES=`go list ./... | grep -v vendor | grep -v mocks`
 
+build:
+	go build -trimpath -o bin/go-oauth2-server go-oauth2-server.go
+
 fmt:
 	for pkg in ${PACKAGES}; do \
 		go fmt $$pkg; \

@@ -3,7 +3,8 @@ package config_test
 import (
 	"testing"
 
-	"github.com/RichardKnop/go-oauth2-server/config"
+	"go-oauth2-server/config"
+
 	"github.com/stretchr/testify/assert"
 )
 

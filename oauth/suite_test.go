@@ -4,14 +4,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/RichardKnop/go-oauth2-server/config"
-	"github.com/RichardKnop/go-oauth2-server/log"
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/oauth"
-	"github.com/RichardKnop/go-oauth2-server/test-util"
+	"go-oauth2-server/config"
+	"go-oauth2-server/log"
+	"go-oauth2-server/models"
+	"go-oauth2-server/oauth"
+	testutil "go-oauth2-server/test-util"
+
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/suite"
+	"gorm.io/gorm"
 )
 
 var (

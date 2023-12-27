@@ -3,8 +3,9 @@ package migrations
 import (
 	"fmt"
 
-	"github.com/RichardKnop/go-oauth2-server/log"
-	"github.com/jinzhu/gorm"
+	"go-oauth2-server/log"
+
+	"gorm.io/gorm"
 )
 
 // MigrationStage ...
@@ -49,15 +50,15 @@ func MigrateAll(db *gorm.DB, migrationFunctions []func(*gorm.DB) error) {
 // MigrationExists checks if the migration called migrationName has been run already
 func MigrationExists(db *gorm.DB, migrationName string) bool {
 	migration := new(Migration)
-	found := !db.Where("name = ?", migrationName).First(migration).RecordNotFound()
+	found := db.Where("name = ?", migrationName).First(migration)
 
-	if found {
+	if found != nil {
 		log.INFO.Printf("Skipping %s migration", migrationName)
 	} else {
 		log.INFO.Printf("Running %s migration", migrationName)
 	}
 
-	return found
+	return found == nil
 }
 
 // SaveMigration saves a migration to the migration table

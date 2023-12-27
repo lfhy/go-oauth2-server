@@ -6,11 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/util"
-	pass "github.com/RichardKnop/go-oauth2-server/util/password"
+	"go-oauth2-server/models"
+	"go-oauth2-server/util"
+	pass "go-oauth2-server/util/password"
+
 	"github.com/RichardKnop/uuid"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 var (
@@ -45,7 +46,7 @@ func (s *Service) FindUserByUsername(username string) (*models.OauthUser, error)
 	// Usernames are case insensitive
 	user := new(models.OauthUser)
 	notFound := s.db.Where("username = LOWER(?)", username).
-		First(user).RecordNotFound()
+		First(user) == nil
 
 	// Not found
 	if notFound {

@@ -6,25 +6,25 @@ import (
 
 // MyGormModel mimixks GormModel but uses uuid's for ID, generated in go
 type MyGormModel struct {
-	ID        string `gorm:"primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
+	ID        string     `gorm:"column:ID,primary_key"`
+	CreatedAt time.Time  `gorm:"column:CreatedAt"`
+	UpdatedAt time.Time  `gorm:"column:UpdatedAt"`
+	DeletedAt *time.Time `gorm:"column:DeletedAt"`
 }
 
 // TimestampModel ...
 type TimestampModel struct {
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
+	CreatedAt time.Time  `gorm:"column:CreatedAt"`
+	UpdatedAt time.Time  `gorm:"column:UpdatedAt"`
+	DeletedAt *time.Time `gorm:"column:DeletedAt"`
 }
 
 // EmailTokenModel is an abstract model which can be used for objects from which
 // we derive redirect emails (email confirmation, password reset and such)
 type EmailTokenModel struct {
 	MyGormModel
-	Reference   string `sql:"type:varchar(40);unique;not null"`
-	EmailSent   bool   `sql:"index;not null"`
-	EmailSentAt *time.Time
-	ExpiresAt   time.Time `sql:"index;not null"`
+	Reference   string     `gorm:"column:Reference,unique;not null"`
+	EmailSent   bool       `gorm:"column:EmailSent,index;not null"`
+	EmailSentAt *time.Time `gorm:"column:EmailSentAt"`
+	ExpiresAt   time.Time  `gorm:"column:ExpiresAt,index;not null"`
 }

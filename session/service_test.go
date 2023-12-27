@@ -1,7 +1,8 @@
 package session_test
 
 import (
-	"github.com/RichardKnop/go-oauth2-server/session"
+	"go-oauth2-server/session"
+
 	"github.com/stretchr/testify/assert"
 )
 

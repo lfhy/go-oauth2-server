@@ -3,11 +3,11 @@ package oauth_test
 import (
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/oauth"
-	"github.com/RichardKnop/go-oauth2-server/session"
+	"go-oauth2-server/models"
+	"go-oauth2-server/oauth"
+	"go-oauth2-server/session"
+
 	"github.com/RichardKnop/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -202,9 +202,6 @@ func (suite *OauthTestSuite) TestAuthenticateRollingRefreshToken() {
 
 	// Authenticate with the first access token
 	now1 := time.Now().UTC()
-	gorm.NowFunc = func() time.Time {
-		return now1
-	}
 	accessToken, err = suite.service.Authenticate("test_token_1")
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), "test_token_1", accessToken.Token)
@@ -238,9 +235,6 @@ func (suite *OauthTestSuite) TestAuthenticateRollingRefreshToken() {
 
 	// Authenticate with the second access token
 	now2 := time.Now().UTC()
-	gorm.NowFunc = func() time.Time {
-		return now2
-	}
 	accessToken, err = suite.service.Authenticate("test_token_2")
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), "test_token_2", accessToken.Token)
@@ -274,9 +268,6 @@ func (suite *OauthTestSuite) TestAuthenticateRollingRefreshToken() {
 
 	// Authenticate with the third access token
 	now3 := time.Now().UTC()
-	gorm.NowFunc = func() time.Time {
-		return now3
-	}
 	accessToken, err = suite.service.Authenticate("test_token_3")
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), "test_token_3", accessToken.Token)
@@ -404,24 +395,24 @@ func (suite *OauthTestSuite) TestClearUserTokens() {
 	suite.service.ClearUserTokens(testUserSession)
 
 	// Assert that the refresh token was removed
-	found := !models.OauthRefreshTokenPreload(suite.db).Where("token = ?", testUserSession.RefreshToken).First(&models.OauthRefreshToken{}).RecordNotFound()
+	found := models.OauthRefreshTokenPreload(suite.db).Where("token = ?", testUserSession.RefreshToken).First(&models.OauthRefreshToken{}) != nil
 	assert.Equal(suite.T(), false, found)
 
 	// Assert that the access token was removed
-	found = !models.OauthAccessTokenPreload(suite.db).Where("token = ?", testUserSession.AccessToken).First(&models.OauthAccessToken{}).RecordNotFound()
+	found = models.OauthAccessTokenPreload(suite.db).Where("token = ?", testUserSession.AccessToken).First(&models.OauthAccessToken{}) != nil
 	assert.Equal(suite.T(), false, found)
 
 	// Assert that the other two tokens are still there
 	// Refresh tokens
-	found = !models.OauthRefreshTokenPreload(suite.db).Where("token = ?", "test_token_2").First(&models.OauthRefreshToken{}).RecordNotFound()
+	found = models.OauthRefreshTokenPreload(suite.db).Where("token = ?", "test_token_2").First(&models.OauthRefreshToken{}) != nil
 	assert.Equal(suite.T(), true, found)
-	found = !models.OauthRefreshTokenPreload(suite.db).Where("token = ?", "test_token_3").First(&models.OauthRefreshToken{}).RecordNotFound()
+	found = models.OauthRefreshTokenPreload(suite.db).Where("token = ?", "test_token_3").First(&models.OauthRefreshToken{}) != nil
 	assert.Equal(suite.T(), true, found)
 
 	// Access tokens
-	found = !models.OauthAccessTokenPreload(suite.db).Where("token = ?", "test_token_2").First(&models.OauthAccessToken{}).RecordNotFound()
+	found = models.OauthAccessTokenPreload(suite.db).Where("token = ?", "test_token_2").First(&models.OauthAccessToken{}) != nil
 	assert.Equal(suite.T(), true, found)
-	found = !models.OauthAccessTokenPreload(suite.db).Where("token = ?", "test_token_3").First(&models.OauthAccessToken{}).RecordNotFound()
+	found = models.OauthAccessTokenPreload(suite.db).Where("token = ?", "test_token_3").First(&models.OauthAccessToken{}) != nil
 	assert.Equal(suite.T(), true, found)
 
 }

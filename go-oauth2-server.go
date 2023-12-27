@@ -4,7 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/RichardKnop/go-oauth2-server/cmd"
+	"go-oauth2-server/cmd"
+	"go-oauth2-server/config"
+
 	"github.com/urfave/cli"
 )
 
@@ -18,14 +20,18 @@ func init() {
 	cliApp = cli.NewApp()
 	cliApp.Name = "go-oauth2-server"
 	cliApp.Usage = "Go OAuth 2.0 Server"
-	cliApp.Author = "Richard Knop"
-	cliApp.Email = "risoknop@gmail.com"
-	cliApp.Version = "0.0.0"
 	cliApp.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:        "configBackend",
-			Value:       "etcd",
+			Name:        "config.backend",
+			Value:       "file",
 			Destination: &configBackend,
+			Usage:       "配置文件存储引擎",
+		},
+		cli.StringFlag{
+			Name:        "config.path",
+			Value:       "config/go_oauth2_server.json",
+			Destination: &config.ConfigPath,
+			Usage:       "配置文件读取路径",
 		},
 	}
 }
@@ -37,21 +43,21 @@ func main() {
 			Name:  "migrate",
 			Usage: "run migrations",
 			Action: func(c *cli.Context) error {
-				return cmd.Migrate(configBackend)
+				return cmd.Migrate(config.ConfigBackendType(configBackend))
 			},
 		},
 		{
 			Name:  "loaddata",
 			Usage: "load data from fixture",
 			Action: func(c *cli.Context) error {
-				return cmd.LoadData(c.Args(), configBackend)
+				return cmd.LoadData(c.Args(), config.ConfigBackendType(configBackend))
 			},
 		},
 		{
 			Name:  "runserver",
 			Usage: "run web server",
 			Action: func(c *cli.Context) error {
-				return cmd.RunServer(configBackend)
+				return cmd.RunServer(config.ConfigBackendType(configBackend))
 			},
 		},
 	}

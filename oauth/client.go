@@ -5,11 +5,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/util"
-	"github.com/RichardKnop/go-oauth2-server/util/password"
+	"go-oauth2-server/models"
+	"go-oauth2-server/util"
+	"go-oauth2-server/util/password"
+
 	"github.com/RichardKnop/uuid"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 var (
@@ -32,7 +33,7 @@ func (s *Service) FindClientByClientID(clientID string) (*models.OauthClient, er
 	// Client IDs are case insensitive
 	client := new(models.OauthClient)
 	notFound := s.db.Where("key = LOWER(?)", clientID).
-		First(client).RecordNotFound()
+		First(client) == nil
 
 	// Not found
 	if notFound {

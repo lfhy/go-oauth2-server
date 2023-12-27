@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/RichardKnop/go-oauth2-server/log"
+	"go-oauth2-server/log"
 )
 
 var (
@@ -12,6 +12,15 @@ var (
 	dialTimeout    = 5 * time.Second
 	contextTimeout = 5 * time.Second
 	reloadDelay    = time.Second * 10
+	ConfigPath     string
+)
+
+type ConfigBackendType string
+
+const (
+	ConfigBackendTypeEtcd   ConfigBackendType = "etcd"
+	ConfigBackendTypeConsul ConfigBackendType = "consul"
+	ConfigBackendTypeFile   ConfigBackendType = "file"
 )
 
 // Cnf ...
@@ -43,7 +52,7 @@ var Cnf = &Config{
 
 // NewConfig loads configuration from etcd and returns *Config struct
 // It also starts a goroutine in the background to keep config up-to-date
-func NewConfig(mustLoadOnce bool, keepReloading bool, backendType string) *Config {
+func NewConfig(mustLoadOnce bool, keepReloading bool, backendType ConfigBackendType) *Config {
 	if configLoaded {
 		return Cnf
 	}
@@ -51,13 +60,12 @@ func NewConfig(mustLoadOnce bool, keepReloading bool, backendType string) *Confi
 	var backend Backend
 
 	switch backendType {
-	case "etcd":
+	case ConfigBackendTypeEtcd:
 		backend = new(etcdBackend)
-	case "consul":
+	case ConfigBackendTypeConsul:
 		backend = new(consulBackend)
 	default:
-		log.FATAL.Printf("%s is not a valid backend", backendType)
-		os.Exit(1)
+		backend = new(fileBackend)
 	}
 
 	backend.InitConfigBackend()

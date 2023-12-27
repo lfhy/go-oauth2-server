@@ -6,7 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/RichardKnop/go-oauth2-server/log"
+	"go-oauth2-server/log"
+
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
 	"github.com/coreos/etcd/pkg/transport"
@@ -16,7 +17,6 @@ import (
 var (
 	etcdEndpoints                         = "http://localhost:2379"
 	etcdCertFile, etcdKeyFile, etcdCaFile string
-	etcdConfigPath                        = "/config/go_oauth2_server.json"
 )
 
 type etcdBackend struct{}
@@ -35,8 +35,8 @@ func (b *etcdBackend) InitConfigBackend() {
 	if os.Getenv("ETCD_CA_FILE") != "" {
 		etcdCaFile = os.Getenv("ETCD_CA_FILE")
 	}
-	if os.Getenv("ETCD_CONFIG_PATH") != "" {
-		etcdConfigPath = os.Getenv("ETCD_CONFIG_PATH")
+	if !strings.HasPrefix(ConfigPath, "/") {
+		ConfigPath = "/" + ConfigPath
 	}
 }
 
@@ -51,7 +51,7 @@ func (b *etcdBackend) LoadConfig() (*Config, error) {
 
 	// Read from remote config the first time
 	ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
-	resp, err := cli.Get(ctx, etcdConfigPath)
+	resp, err := cli.Get(ctx, ConfigPath)
 	cancel()
 	if err != nil {
 		switch err {
@@ -67,7 +67,7 @@ func (b *etcdBackend) LoadConfig() (*Config, error) {
 	}
 
 	if len(resp.Kvs) == 0 {
-		return nil, fmt.Errorf("key not found: %s", etcdConfigPath)
+		return nil, fmt.Errorf("key not found: %s", ConfigPath)
 	}
 
 	// Unmarshal the config JSON into the cnf object

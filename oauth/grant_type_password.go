@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/RichardKnop/go-oauth2-server/models"
-	"github.com/RichardKnop/go-oauth2-server/oauth/tokentypes"
+	"go-oauth2-server/models"
+	"go-oauth2-server/oauth/tokentypes"
 )
 
 var (

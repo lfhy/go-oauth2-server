@@ -1,13 +1,15 @@
 package mocks
 
-import "github.com/RichardKnop/go-oauth2-server/oauth"
-import "github.com/stretchr/testify/mock"
+import (
+	"go-oauth2-server/config"
+	"go-oauth2-server/models"
+	"go-oauth2-server/oauth"
+	"go-oauth2-server/util/routes"
 
-import "github.com/RichardKnop/go-oauth2-server/config"
-import "github.com/RichardKnop/go-oauth2-server/models"
-import "github.com/RichardKnop/go-oauth2-server/util/routes"
-import "github.com/gorilla/mux"
-import "github.com/jinzhu/gorm"
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/mock"
+	"gorm.io/gorm"
+)
 
 type ServiceInterface struct {
 	mock.Mock

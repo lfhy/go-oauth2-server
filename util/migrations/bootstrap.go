@@ -3,8 +3,9 @@ package migrations
 import (
 	"fmt"
 
-	"github.com/RichardKnop/go-oauth2-server/log"
-	"github.com/jinzhu/gorm"
+	"go-oauth2-server/log"
+
+	"gorm.io/gorm"
 )
 
 // Bootstrap creates "migrations" table
@@ -26,7 +27,7 @@ func Bootstrap(db *gorm.DB) error {
 	log.INFO.Printf("Running %s migration", migrationName)
 
 	// Create migrations table
-	if err := db.CreateTable(new(Migration)).Error; err != nil {
+	if err := db.AutoMigrate(new(Migration)); err != nil {
 		return fmt.Errorf("Error creating migrations table: %s", db.Error)
 	}
 

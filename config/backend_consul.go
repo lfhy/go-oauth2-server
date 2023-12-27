@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
-	"github.com/RichardKnop/go-oauth2-server/log"
+	"go-oauth2-server/log"
+
 	"github.com/hashicorp/consul/api"
 )
 
 var (
 	consulEndpoint                              = "http://localhost:8500"
 	consulCertFile, consulKeyFile, consulCaFile string
-	consulConfigPath                            = "/config/go_oauth2_server.json"
 )
 
 type consulBackend struct{}
@@ -32,12 +33,12 @@ func (b *consulBackend) InitConfigBackend() {
 	if os.Getenv("CONSUL_CA_FILE") != "" {
 		consulCaFile = os.Getenv("CONSUL_CA_FILE")
 	}
-	if os.Getenv("CONSUL_CONFIG_PATH") != "" {
-		consulConfigPath = os.Getenv("CONSUL_CONFIG_PATH")
+	if !strings.HasPrefix(ConfigPath, "/") {
+		ConfigPath = "/" + ConfigPath
 	}
 }
 
-//LoadConfig gets the JSON from Consul and unmarshals it to the config object
+// LoadConfig gets the JSON from Consul and unmarshals it to the config object
 func (b *consulBackend) LoadConfig() (*Config, error) {
 
 	cli, err := newConsulClient(consulEndpoint, consulCertFile, consulKeyFile, consulCaFile)
@@ -47,14 +48,14 @@ func (b *consulBackend) LoadConfig() (*Config, error) {
 
 	// Read from remote config the first time
 
-	resp, _, err := cli.KV().Get(consulConfigPath, nil)
+	resp, _, err := cli.KV().Get(ConfigPath, nil)
 
 	if err != nil {
 		return nil, err
 	}
 
 	if resp == nil {
-		return nil, fmt.Errorf("key not found: %s", consulConfigPath)
+		return nil, fmt.Errorf("key not found: %s", ConfigPath)
 	}
 
 	// Unmarshal the config JSON into the cnf object
